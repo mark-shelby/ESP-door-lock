@@ -6,29 +6,29 @@
 
 // A. The Lock Trigger
 void triggerRelay() {
-    Serial.println("🔓 ACTION: Activating Relay...");
+    Serial.println("ACTION: Activating Relay...");
     digitalWrite(RELAY_PIN, HIGH);   // Signal LOW to turn ON Relay
     delay(7000);                    // Keep open for 7 seconds
     digitalWrite(RELAY_PIN, LOW);  // Signal HIGH to turn OFF Relay
-    Serial.println("🔒 ACTION: Relay Deactivated (Locked)");
+    Serial.println("ACTION: Relay Deactivated (Locked)");
 }
 
 // B. The Core Logic: Check DB -> Open Door -> Log It
 void checkAccessAndLog(String uidStr, String status) {
     Serial.println("------------------------------------------------");
-    Serial.print("🔍 CHECKING DATABASE FOR UID: "); Serial.println(uidStr);
+    Serial.print(" CHECKING DATABASE FOR UID: "); Serial.println(uidStr);
 
     if (Firebase.ready()) {
         // 1. Construct Path: e.g., /Members/917BFE00
         String memberPath = "/Members/" + uidStr;
 
         // 2. Fetch Data
-        Serial.print("📡 QUERY: Reading from " + memberPath + "... ");
+        Serial.print(" QUERY: Reading from " + memberPath + "... ");
         if (Firebase.RTDB.getJSON(&fbdo, memberPath)) {
             
             // Check if data actually exists
             if (fbdo.dataType() == "json") {
-                Serial.println("✅ FOUND!");
+                Serial.println("FOUND!");
                 
                 // 3. Parse JSON to get Name and Scholar No
                 FirebaseJson &json = fbdo.jsonObject();
@@ -42,13 +42,12 @@ void checkAccessAndLog(String uidStr, String status) {
                 json.get(result, "scholar_number");
                 String scholarNum = result.stringValue;
 
-                Serial.printf("👤 MEMBER IDENTIFIED: %s (Scholar: %s)\n", memberName.c_str(), scholarNum.c_str());
-
+                Serial.printf(" MEMBER IDENTIFIED: %s (Scholar: %s)\n", memberName.c_str(), scholarNum.c_str());
                 // 4. OPEN THE DOOR
                 triggerRelay();
 
                 // 5. PUSH LOG TO DB
-                Serial.print("📝 LOGGING: Uploading entry to /Entry_log... ");
+                Serial.print(" LOGGING: Uploading entry to /Entry_log... ");
                 
                 FirebaseJson logEntry;
                 logEntry.add("uid", uidStr);
@@ -61,21 +60,21 @@ void checkAccessAndLog(String uidStr, String status) {
                 logEntry.set("timestamp/.sv", "timestamp"); 
 
                 if (Firebase.RTDB.pushJSON(&fbdo, "/Entry_log", &logEntry)) {
-                    Serial.println("✅ SUCCESS");
+                    Serial.println(" SUCCESS");
                 } else {
-                    Serial.println("❌ LOG FAILED: " + fbdo.errorReason());
+                    Serial.println(" LOG FAILED: " + fbdo.errorReason());
                 }
 
             } else {
-                Serial.println("❌ FAILED. (Data is null/empty)");
+                Serial.println(" FAILED. (Data is null/empty)");
             }
         } else {
             // If the path doesn't exist (Member not registered)
-            Serial.println("❌ ACCESS DENIED (Member not found in DB)");
+            Serial.println(" ACCESS DENIED (Member not found in DB)");
             Serial.println("REASON: " + fbdo.errorReason());
         }
     } else {
-        Serial.println("⚠️ ERROR: Firebase not ready/disconnected.");
+        Serial.println(" ERROR: Firebase not ready/disconnected.");
     }
     Serial.println("------------------------------------------------");
 }
@@ -84,7 +83,7 @@ void checkAccessAndLog(String uidStr, String status) {
 
 // C. Callback for ESP-NOW (Outdoor Scanner)
 void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingData, int len) {
-    Serial.print("📡 ESP-NOW: Data Received (" + String(len) + " bytes). ");
+    Serial.print(" ESP-NOW: Data Received (" + String(len) + " bytes). ");
     
     // Safety check for data length
     if (len == 4) {
@@ -99,7 +98,7 @@ void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingDat
         // Call the main logic with status "ENTRY"
         checkAccessAndLog(uidStr, "ENTRY");
     } else {
-        Serial.println("⚠️ IGNORED: Invalid data length.");
+        Serial.println(" IGNORED: Invalid data length.");
     }
 }
 
