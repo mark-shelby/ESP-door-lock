@@ -1,3 +1,11 @@
+#include <Arduino.h>
+#include <WiFi.h>
+#include <esp_now.h>
+#include <SPI.h>
+#include <MFRC522.h>
+#include <Firebase_ESP_Client.h>
+
+
 
 #define WIFI_SSID       "realme100"
 #define WIFI_PASS       "shashank100"
