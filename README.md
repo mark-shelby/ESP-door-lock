@@ -56,3 +56,13 @@ Open the code and edit the `CONFIGURATION` section with your details:
 ESP-NOW requires the Sender (Outdoor ESP) and Receiver (Indoor ESP) to be on the same Wi-Fi channel.
 When this Indoor node boots up, it will print its current Wi-Fi channel to the Serial Monitor.
 You must hardcode your Outdoor ESP node to use this exact channel.
+
+🔍 How It Works
+-Initialization: The ESP32 connects to Wi-Fi, authenticates with Firebase, initializes the local RFID reader, 
+and sets up ESP-NOW to listen for incoming data.
+
+-Local Scan (Exit): If a user scans their card on the indoor reader, the ESP32 reads the UID, checks it
+ against the /Members database, opens the relay, and logs the event as "EXIT".
+
+-Remote Scan (Entry): If the outdoor ESP32 reads a card, it sends the 4-byte UID to this indoor ESP32 
+via ESP-NOW. The indoor node processes the UID, checks the database, opens the relay, and logs the event as "ENTRY".
