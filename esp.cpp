@@ -12,17 +12,17 @@ void setup() {
     // 2. Init Local RFID
     SPI.begin();
     rfid.PCD_Init();
-    Serial.println("✅ Hardware: RFID & Relay Initialized");
+    Serial.println(" Hardware: RFID & Relay Initialized");
 
     // 3. Connect to Wi-Fi
     WiFi.mode(WIFI_AP_STA); // Dual Mode for ESP-NOW + WiFi
     WiFi.begin(WIFI_SSID, WIFI_PASS);
-    Serial.print("🌐 Wi-Fi: Connecting");
+    Serial.print(" Wi-Fi: Connecting");
     
     while (WiFi.status() != WL_CONNECTED) {
         delay(300); Serial.print(".");
     }
-    Serial.println("\n✅ Wi-Fi Connected!");
+    Serial.println("\n Wi-Fi Connected!");
     Serial.print("   IP Address: "); Serial.println(WiFi.localIP());
     // * IMPORTANT DEBUG INFO FOR OUTDOOR ESP *
     Serial.print("   CHANNEL: "); Serial.println(WiFi.channel()); 
@@ -39,18 +39,18 @@ void setup() {
 
     Firebase.begin(&config, &auth);
     Firebase.reconnectWiFi(true);
-    Serial.println("✅ Firebase: Initialized");
+    Serial.println(" Firebase: Initialized");
 
     // 5. Initialize ESP-NOW
     if (esp_now_init() == ESP_OK) {
-        Serial.println("✅ ESP-NOW: Initialized Successfully");
+        Serial.println(" ESP-NOW: Initialized Successfully");
         esp_now_register_recv_cb(OnDataRecv);
     } else {
-        Serial.println("❌ ESP-NOW: Init Failed (Restarting...)");
+        Serial.println(" ESP-NOW: Init Failed (Restarting...)");
         delay(1000); ESP.restart();
     }
     
-    Serial.println("🚀 SYSTEM READY. Waiting for Scans...");
+    Serial.println(" SYSTEM READY. Waiting for Scans...");
 }
 
 // ---------------------------------------------------------------------------
