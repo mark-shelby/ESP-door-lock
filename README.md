@@ -38,3 +38,16 @@ Install the following libraries via the Arduino Library Manager:
 - `MFRC522` by GithubCommunity
 - `Firebase_ESP_Client` by Mobizt
 - Built-in ESP32 libraries: `WiFi.h`, `esp_now.h`, `SPI.h`
+
+## ⚙️ Setup & Configuration
+
+**1. Configure Credentials:**
+Open the code and edit the `CONFIGURATION` section with your details:
+
+```cpp
+#define WIFI_SSID       "realme100"
+#define WIFI_PASS       "shashank100"
+#define API_KEY         "AIzaSyA0CYXI_qk7wNhXORAfssX0F-xLlVBuuxU"
+#define DATABASE_URL    "https://lab-security-db-default-rtdb.firebaseio.com/"
+#define USER_EMAIL      "esp32@lab.com"
+#define USER_PASSWORD   "esp32@lab.com"
