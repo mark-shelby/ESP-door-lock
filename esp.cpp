@@ -1,4 +1,37 @@
 
+#define WIFI_SSID       "realme100"
+#define WIFI_PASS       "shashank100"
+
+// Firebase Project Info
+#define API_KEY         "AIzaSyA0CYXI_qk7wNhXORAfssX0F-xLlVBuuxU"
+#define DATABASE_URL    "https://lab-security-db-default-rtdb.firebaseio.com/"
+
+// The "Hardware Admin" Account
+#define USER_EMAIL      "esp32@lab.com"
+#define USER_PASSWORD   "esp32@lab.com"
+
+// Hardware Pins
+#define RELAY_PIN       35   // Pin connected to Relay Signal
+#define SS_PIN          5   // Indoor RFID SDA Pin
+#define RST_PIN         22  // Indoor RFID RST Pin
+
+// ---------------------------------------------------------------------------
+// 2. GLOBAL OBJECTS & VARIABLES
+// ---------------------------------------------------------------------------
+MFRC522 rfid(SS_PIN, RST_PIN);
+FirebaseData fbdo;
+FirebaseAuth auth;
+FirebaseConfig config;
+
+unsigned long dataMillis = 0;
+bool wifiConnected = false;
+
+// Structure to match the Sender (Outdoor ESP)
+typedef struct struct_message {
+    uint8_t uid[4]; // 4 Bytes for standard Mifare UID
+} struct_message;
+
+struct_message incomingData;
 
 // ---------------------------------------------------------------------------
 // 3. HELPER FUNCTIONS
