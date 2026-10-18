@@ -1,5 +1,28 @@
 
+// C. Callback for ESP-NOW (Outdoor Scanner)
+void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingData, int len) {
+    Serial.print("📡 ESP-NOW: Data Received (" + String(len) + " bytes). ");
+    
+    // Safety check for data length
+    if (len == 4) {
+        String uidStr = "";
+        for (int i = 0; i < 4; i++) {
+            uidStr += String(incomingData[i] < 0x10 ? "0" : "");
+            uidStr += String(incomingData[i], HEX);
+        }
+        uidStr.toUpperCase();
+        
+        Serial.println("Processing External Scan...");
+        // Call the main logic with status "ENTRY"
+        checkAccessAndLog(uidStr, "ENTRY");
+    } else {
+        Serial.println("⚠️ IGNORED: Invalid data length.");
+    }
+}
 
+// ---------------------------------------------------------------------------
+// 4. SETUP
+// ---------------------------------------------------------------------------
 
 void setup() {
     Serial.begin(115200);
