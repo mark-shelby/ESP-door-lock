@@ -1,4 +1,18 @@
 
+
+// ---------------------------------------------------------------------------
+// 3. HELPER FUNCTIONS
+// ---------------------------------------------------------------------------
+
+// A. The Lock Trigger
+void triggerRelay() {
+    Serial.println("🔓 ACTION: Activating Relay...");
+    digitalWrite(RELAY_PIN, HIGH);   // Signal LOW to turn ON Relay
+    delay(7000);                    // Keep open for 7 seconds
+    digitalWrite(RELAY_PIN, LOW);  // Signal HIGH to turn OFF Relay
+    Serial.println("🔒 ACTION: Relay Deactivated (Locked)");
+}
+
 // B. The Core Logic: Check DB -> Open Door -> Log It
 void checkAccessAndLog(String uidStr, String status) {
     Serial.println("------------------------------------------------");
