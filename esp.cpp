@@ -1,4 +1,73 @@
 
+// B. The Core Logic: Check DB -> Open Door -> Log It
+void checkAccessAndLog(String uidStr, String status) {
+    Serial.println("------------------------------------------------");
+    Serial.print("🔍 CHECKING DATABASE FOR UID: "); Serial.println(uidStr);
+
+    if (Firebase.ready()) {
+        // 1. Construct Path: e.g., /Members/917BFE00
+        String memberPath = "/Members/" + uidStr;
+
+        // 2. Fetch Data
+        Serial.print("📡 QUERY: Reading from " + memberPath + "... ");
+        if (Firebase.RTDB.getJSON(&fbdo, memberPath)) {
+            
+            // Check if data actually exists
+            if (fbdo.dataType() == "json") {
+                Serial.println("✅ FOUND!");
+                
+                // 3. Parse JSON to get Name and Scholar No
+                FirebaseJson &json = fbdo.jsonObject();
+                FirebaseJsonData result;
+                
+                // Get Name
+                json.get(result, "name");
+                String memberName = result.stringValue;
+                
+                // Get Scholar Number
+                json.get(result, "scholar_number");
+                String scholarNum = result.stringValue;
+
+                Serial.printf("👤 MEMBER IDENTIFIED: %s (Scholar: %s)\n", memberName.c_str(), scholarNum.c_str());
+
+                // 4. OPEN THE DOOR
+                triggerRelay();
+
+                // 5. PUSH LOG TO DB
+                Serial.print("📝 LOGGING: Uploading entry to /Entry_log... ");
+                
+                FirebaseJson logEntry;
+                logEntry.add("uid", uidStr);
+                logEntry.add("name", memberName);
+                logEntry.add("scholar_number", scholarNum);
+                logEntry.add("status", status); // "ENTRY" or "EXIT"
+                
+                // FIX: Correct way to set Server Timestamp in this library
+                // This creates { "timestamp": { ".sv": "timestamp" } }
+                logEntry.set("timestamp/.sv", "timestamp"); 
+
+                if (Firebase.RTDB.pushJSON(&fbdo, "/Entry_log", &logEntry)) {
+                    Serial.println("✅ SUCCESS");
+                } else {
+                    Serial.println("❌ LOG FAILED: " + fbdo.errorReason());
+                }
+
+            } else {
+                Serial.println("❌ FAILED. (Data is null/empty)");
+            }
+        } else {
+            // If the path doesn't exist (Member not registered)
+            Serial.println("❌ ACCESS DENIED (Member not found in DB)");
+            Serial.println("REASON: " + fbdo.errorReason());
+        }
+    } else {
+        Serial.println("⚠️ ERROR: Firebase not ready/disconnected.");
+    }
+    Serial.println("------------------------------------------------");
+}
+
+
+
 // C. Callback for ESP-NOW (Outdoor Scanner)
 void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingData, int len) {
     Serial.print("📡 ESP-NOW: Data Received (" + String(len) + " bytes). ");
