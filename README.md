@@ -53,4 +53,6 @@ Open the code and edit the `CONFIGURATION` section with your details:
 #define USER_PASSWORD   "esp32@lab.com"
 
 2. Sync ESP-NOW Wi-Fi Channels:
-ESP-NOW requires the Sender (Outdoor ESP) and Receiver (Indoor ESP) to be on the same Wi-Fi channel. When this Indoor node boots up, it will print its current Wi-Fi channel to the Serial Monitor. You must hardcode your Outdoor ESP node to use this exact channel.
+ESP-NOW requires the Sender (Outdoor ESP) and Receiver (Indoor ESP) to be on the same Wi-Fi channel.
+When this Indoor node boots up, it will print its current Wi-Fi channel to the Serial Monitor.
+You must hardcode your Outdoor ESP node to use this exact channel.
