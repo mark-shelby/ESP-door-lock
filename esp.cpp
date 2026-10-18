@@ -15,9 +15,7 @@
 #define SS_PIN          5   // Indoor RFID SDA Pin
 #define RST_PIN         22  // Indoor RFID RST Pin
 
-// ---------------------------------------------------------------------------
-// 2. GLOBAL OBJECTS & VARIABLES
-// ---------------------------------------------------------------------------
+
 MFRC522 rfid(SS_PIN, RST_PIN);
 FirebaseData fbdo;
 FirebaseAuth auth;
@@ -32,10 +30,6 @@ typedef struct struct_message {
 } struct_message;
 
 struct_message incomingData;
-
-// ---------------------------------------------------------------------------
-// 3. HELPER FUNCTIONS
-// ---------------------------------------------------------------------------
 
 // A. The Lock Trigger
 void triggerRelay() {
@@ -135,9 +129,7 @@ void OnDataRecv(const esp_now_recv_info_t *recv_info, const uint8_t *incomingDat
     }
 }
 
-// ---------------------------------------------------------------------------
-// 4. SETUP
-// ---------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
 void setup() {
     Serial.begin(115200);
@@ -191,9 +183,6 @@ void setup() {
     Serial.println(" SYSTEM READY. Waiting for Scans...");
 }
 
-// ---------------------------------------------------------------------------
-// 5. LOOP (Handles Exit/Local Scanner)
-// ---------------------------------------------------------------------------
 void loop() {
     // A. Keep Firebase Alive is handled automatically
 
